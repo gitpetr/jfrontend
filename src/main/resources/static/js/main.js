@@ -3,6 +3,9 @@ $(function () {
     // load all
     $('#users-table-tab').click();
     $.ajax({
+        headers: {
+            'Authorization': 'Basic ' + btoa('ADMIN:ADMIN')
+        },
         type: 'get',
         url: 'http://localhost:8081/api/v1/admin/user',
         success: function (users) {
@@ -21,6 +24,9 @@ $(function () {
         $this = $(this);
         // const href = $this.attr('action');
         $.ajax({
+            headers: {
+                'Authorization': 'Basic ' + btoa('ADMIN:ADMIN')
+            },
             type: 'post',
             url: "http://localhost:8081/api/v1/admin/saveUser",
             data: $this.serialize(),
@@ -44,6 +50,9 @@ $(function () {
         event.preventDefault();
         let $form = $('#saveUser');
         $.ajax({
+            headers: {
+                'Authorization': 'Basic ' + btoa('ADMIN:ADMIN')
+            },
             type: 'post',
             url: "http://localhost:8081/api/v1/admin/saveUser",
             data: $form.serialize(),
@@ -74,6 +83,9 @@ $(function () {
         const href = $(this).attr('href');
         console.log(href);
         $.ajax({
+            headers: {
+                'Authorization': 'Basic ' + btoa('ADMIN:ADMIN')
+            },
             type: 'get',
             url: href,
             success: function () {
