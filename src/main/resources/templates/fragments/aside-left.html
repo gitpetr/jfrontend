@@ -12,7 +12,7 @@
 <th:block xmlns:th="http://www.thymeleaf.org" th:fragment="user">
 
     <ul class="nav nav-pills nav-fill flex-column mt-4">
-        <th:block th:if="${#authorization.expression('hasAuthority(''ROLE_ADMIN'')')}">
+        <th:block th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
             <li class="nav-item" >
                 <a th:href="@{/admin/user}" class="nav-link" href="#">Admin</a>
             </li>

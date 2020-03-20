@@ -3,13 +3,11 @@ $(function () {
     // load all
     $('#users-table-tab').click();
     $.ajax({
-        headers: {
-            'Authorization': 'Basic ' + btoa('ADMIN:ADMIN')
-        },
         type: 'get',
-        url: 'http://localhost:8081/api/v1/admin/user',
+        url: '/admin/user/all',
         success: function (users) {
-            users.forEach(u => $('#user-item').append('<tr >' + oneTr(u) + '</tr>'));
+            console.log(JSON.parse(users));
+            JSON.parse(users).forEach(u => $('#user-item').append('<tr >' + oneTr(u) + '</tr>'));
         },
         error: function (request, status) {
             console.log(request.responseText);
@@ -22,17 +20,13 @@ $(function () {
     $('#modalEditForm').on('submit', function (event) {
         event.preventDefault();
         $this = $(this);
-        // const href = $this.attr('action');
         $.ajax({
-            headers: {
-                'Authorization': 'Basic ' + btoa('ADMIN:ADMIN')
-            },
             type: 'post',
-            url: "http://localhost:8081/api/v1/admin/saveUser",
+            url: "/admin/saveUser/",
             data: $this.serialize(),
-            success: function (u) {
-                $updatingNode = $('td:contains(' + u.id + ')').parent();
-                $updatingNode.html(oneTr(u));
+            success: function (user) {
+                $updatingNode = $('td:contains(' + JSON.parse(user).id + ')').parent();
+                $updatingNode.html(oneTr(JSON.parse(user)));
                 $('#modal-edit-close').click();
             },
 
@@ -50,16 +44,13 @@ $(function () {
         event.preventDefault();
         let $form = $('#saveUser');
         $.ajax({
-            headers: {
-                'Authorization': 'Basic ' + btoa('ADMIN:ADMIN')
-            },
             type: 'post',
-            url: "http://localhost:8081/api/v1/admin/saveUser",
+            url: "/admin/saveUser/",
             data: $form.serialize(),
             success: function (user) {
                 $('#saveUser').trigger('reset');
                 $('#users-table-tab').click();
-                appendNewUser(user);
+                appendNewUser(JSON.parse(user));
             }
         })
     });
@@ -81,17 +72,8 @@ $(function () {
         event.preventDefault();
         let n = $(this).parent().parent();
         const href = $(this).attr('href');
-        console.log(href);
-        $.ajax({
-            headers: {
-                'Authorization': 'Basic ' + btoa('ADMIN:ADMIN')
-            },
-            type: 'get',
-            url: href,
-            success: function () {
-               n.html('');
-            }
-        });
+        $.get(href);
+        n.html('');
     });
 
     function appendNewUser(u) {
@@ -107,7 +89,7 @@ $(function () {
             '<td>' + u.roles +
             '</td> ' + '<td class="d-flex justify-content-around"> ' +
             '<a class="btn btn-primary eBtn" href="">Edit</a> ' +
-            '<a class="btn btn-danger dBtn" onclick="if (confirmDelete()) return false;"' +
-            ' href="http://localhost:8081/api/v1/admin/delete/' + u.id + '">Delete</a></td> '
+            '<a class="btn btn-danger dBtn" onclick="if (confirmDelete()) return false"' +
+            ' href="/admin/user/delete/' + u.id + '">Delete</a></td> '
     }
 });
