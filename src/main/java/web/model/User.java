@@ -28,7 +28,6 @@ public class User implements UserDetails, Serializable {
         this.id = id;
     }
 
-
     public void setUsername(String name) {
         this.username = name;
     }
