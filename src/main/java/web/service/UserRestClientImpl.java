@@ -1,21 +1,17 @@
 package web.service;
 
-import com.google.gson.Gson;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
 import web.model.User;
 
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Collections;
 
 @Service
 public class UserRestClientImpl implements UserRestClient {
-    Gson gson = new Gson();
 
+    @Override
     public String getUsers(String url) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -23,11 +19,13 @@ public class UserRestClientImpl implements UserRestClient {
         return response.getBody();
     }
 
+    @Override
     public void deleteUser(String url) {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.exchange(url , HttpMethod.GET, new HttpEntity<String>(authenticate()), String.class);
     }
 
+    @Override
     public String saveUser(User user, String url) {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<User> entity = new HttpEntity<>(user, authenticate());
@@ -35,16 +33,10 @@ public class UserRestClientImpl implements UserRestClient {
         return response.getBody();
     }
 
-
-    public static void main(String[] args) {
-        final UserRestClientImpl userRestClient = new UserRestClientImpl();
-        System.out.println(userRestClient.getUsers("http://localhost:8081/api/v1/admin/user"));
-    }
-
     private HttpHeaders authenticate() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         String authString =  "ADMIN:ADMIN";
         String authStringEnc = Base64.getEncoder().encodeToString(authString.getBytes());
         headers.set("Authorization", "Basic " + authStringEnc);

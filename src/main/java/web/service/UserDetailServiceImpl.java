@@ -15,18 +15,18 @@ import java.util.Set;
 
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
-    UserRestClientImpl userRestClient;
+    UserRestClient userRestClient;
     Gson gson = new Gson();
-    private String SERVER_URL = "http://localhost:8081/api/v1/admin/user/";
+    private String API_URL = "http://localhost:8081/api/v1/admin/user/";
 
     @Autowired
-    public UserDetailServiceImpl(UserRestClientImpl userRestClient) {
+    public UserDetailServiceImpl(UserRestClient userRestClient) {
         this.userRestClient = userRestClient;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String UserByJson = this.userRestClient.getUsers(SERVER_URL + username);
+        String UserByJson = this.userRestClient.getUsers(API_URL + username);
         final User user = gson.fromJson(UserByJson, User.class);
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();

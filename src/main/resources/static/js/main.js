@@ -72,8 +72,11 @@ $(function () {
         event.preventDefault();
         let n = $(this).parent().parent();
         const href = $(this).attr('href');
-        $.get(href);
-        n.html('');
+        $.ajax({
+            url: href,
+            success: n.html(''),
+            error: console.log('удалить не удалось')
+        })
     });
 
     function appendNewUser(u) {
