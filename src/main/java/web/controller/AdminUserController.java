@@ -31,8 +31,7 @@ public class AdminUserController {
     @GetMapping("/user/all")
     public List<User> userAll() {
         final String users = userRestClient.getUsers(API_URL + "/user");
-        final List<User> fromJson = gson.fromJson(users,  List.class);
-        return fromJson;
+        return gson.fromJson(users,  List.class);
     }
 
     @GetMapping("/user/delete/{userId}")

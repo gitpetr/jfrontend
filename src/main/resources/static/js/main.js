@@ -1,20 +1,6 @@
 $(function () {
-    confirmDelete = () => !(confirm('Are you sure you want to delete this user?'));
     // load all
-    $('#users-table-tab').click();
-    $.ajax({
-        type: 'get',
-        url: '/admin/user/all',
-        success: function (users) {
-            console.log(users);
-            users.forEach(u => $('#user-item').append('<tr >' + oneTr(u) + '</tr>'));
-        },
-        error: function (request, status) {
-            console.log(request.responseText);
-            console.log(status);
-        }
-    });
-
+    loadAllUsers();
 
         //update user
     $('#modalEditForm').on('submit', function (event) {
@@ -24,12 +10,7 @@ $(function () {
             type: 'post',
             url: "/admin/saveUser/",
             data: $this.serialize(),
-            success: function (user) {
-                $updatingNode = $('td:contains(' + user.id + ')').parent();
-                $updatingNode.html(oneTr(user));
-                $('#modal-edit-close').click();
-            },
-
+            success: updateUser,
             error: function (request, status) {
                 console.log(request.responseText);
                 console.log(status);
@@ -47,23 +28,19 @@ $(function () {
             type: 'post',
             url: "/admin/saveUser/",
             data: $form.serialize(),
-            success: function (user) {
-                $('#saveUser').trigger('reset');
-                $('#users-table-tab').click();
-                appendNewUser(user);
-            }
+            success: appendNewUser
         })
     });
 
     //edit
     $('.table').on('click', '.eBtn', function (event) {
         event.preventDefault();
-        let n = $(this).parent().parent();
-        $('#id').val($(n).children('td:eq(0)').text());
-        $('#username').val($(n).children('td:eq(1)').text());
-        $('#email').val($(n).children('td:eq(2)').text());
-        $('#password').val($(n).children('td:eq(3)').text());
-        $('#country').val($(n).children('td:eq(4)').text());
+        let tr = $(this).parent().parent();
+        $('#id').val($(tr).children('td:eq(0)').text());
+        $('#username').val($(tr).children('td:eq(1)').text());
+        $('#email').val($(tr).children('td:eq(2)').text());
+        $('#password').val($(tr).children('td:eq(3)').text());
+        $('#country').val($(tr).children('td:eq(4)').text());
         $('#modalEdit').modal('show');
     });
 
@@ -80,7 +57,20 @@ $(function () {
     });
 
     function appendNewUser(u) {
+        $('#saveUser').trigger('reset');
+        $('#users-table-tab').click();
         $('#user-item').append('<tr >' + oneTr(u) + '</tr>');
+    }
+
+    function loadUsers(users) {
+        console.log(users);
+        users.forEach(u => $('#user-item').append('<tr >' + oneTr(u) + '</tr>'));
+    }
+
+    function updateUser(user) {
+        $updatingNode = $('td:contains(' + user.id + ')').parent();
+        $updatingNode.html(oneTr(user));
+        $('#modal-edit-close').click();
     }
 
     function oneTr(u) {
@@ -92,7 +82,19 @@ $(function () {
             '<td>' + u.roles +
             '</td> ' + '<td class="d-flex justify-content-around"> ' +
             '<a class="btn btn-primary eBtn" href="">Edit</a> ' +
-            '<a class="btn btn-danger dBtn" onclick="if (confirmDelete()) return false"' +
+            '<a class="btn btn-danger dBtn"' +
             ' href="/admin/user/delete/' + u.id + '">Delete</a></td> '
+    }
+
+    function loadAllUsers() {
+        $.ajax({
+            type: 'get',
+            url: '/admin/user/all',
+            success: loadUsers,
+            error: function (request, status) {
+                console.log(request.responseText);
+                console.log(status);
+            }
+        });
     }
 });
