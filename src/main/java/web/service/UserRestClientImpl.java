@@ -1,12 +1,12 @@
 package web.service;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import web.model.User;
+
+import java.nio.charset.Charset;
+import java.util.Arrays;
 
 @Service
 public class UserRestClientImpl implements UserRestClient {
@@ -35,6 +35,9 @@ public class UserRestClientImpl implements UserRestClient {
 
     private HttpHeaders authenticate() {
         HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(new MediaType("application", "json", Charset.forName("UTF-8"))));
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        headers.setAcceptCharset(Arrays.asList(Charset.forName("UTF-8")));
         headers.setBasicAuth("ADMIN", "ADMIN");
         return headers;
     }

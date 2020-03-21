@@ -6,8 +6,8 @@ $(function () {
         type: 'get',
         url: '/admin/user/all',
         success: function (users) {
-            console.log(JSON.parse(users));
-            JSON.parse(users).forEach(u => $('#user-item').append('<tr >' + oneTr(u) + '</tr>'));
+            console.log(users);
+            users.forEach(u => $('#user-item').append('<tr >' + oneTr(u) + '</tr>'));
         },
         error: function (request, status) {
             console.log(request.responseText);
@@ -25,8 +25,8 @@ $(function () {
             url: "/admin/saveUser/",
             data: $this.serialize(),
             success: function (user) {
-                $updatingNode = $('td:contains(' + JSON.parse(user).id + ')').parent();
-                $updatingNode.html(oneTr(JSON.parse(user)));
+                $updatingNode = $('td:contains(' + user.id + ')').parent();
+                $updatingNode.html(oneTr(user));
                 $('#modal-edit-close').click();
             },
 
@@ -50,7 +50,7 @@ $(function () {
             success: function (user) {
                 $('#saveUser').trigger('reset');
                 $('#users-table-tab').click();
-                appendNewUser(JSON.parse(user));
+                appendNewUser(user);
             }
         })
     });

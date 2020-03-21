@@ -1,10 +1,13 @@
 package web.controller;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import web.model.User;
 import web.service.UserRestClient;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -17,6 +20,8 @@ public class AdminUserController {
         this.userRestClient = userRestClient;
     }
 
+    Gson gson = new Gson();
+
     @GetMapping("/user")
     public String listUsers() {
         return "admin-list-users";
@@ -24,8 +29,10 @@ public class AdminUserController {
 
     @ResponseBody
     @GetMapping("/user/all")
-    public String userAll() {
-        return userRestClient.getUsers(API_URL + "/user");
+    public List<User> userAll() {
+        final String users = userRestClient.getUsers(API_URL + "/user");
+        final List<User> fromJson = gson.fromJson(users,  List.class);
+        return fromJson;
     }
 
     @GetMapping("/user/delete/{userId}")
@@ -35,7 +42,8 @@ public class AdminUserController {
 
     @ResponseBody
     @PostMapping("/saveUser/")
-    public String saveUser(@ModelAttribute("user") User user) {
-        return userRestClient.saveUser(user, API_URL + "/saveUser");
+    public User saveUser(@ModelAttribute("user") User user) {
+        final String savedUser = userRestClient.saveUser(user, API_URL + "/saveUser");
+        return gson.fromJson(savedUser, User.class);
     }
 }
