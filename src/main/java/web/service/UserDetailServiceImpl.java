@@ -13,21 +13,20 @@ import web.model.User;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
-    UserRestClient userRestClient;
+    UserService userService;
     Gson gson = new Gson();
     private String API_URL = "http://localhost:8081/api/v1/admin/user/";
 
     @Autowired
-    public UserDetailServiceImpl(UserRestClient userRestClient) {
-        this.userRestClient = userRestClient;
+    public UserDetailServiceImpl(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String UserByJson = this.userRestClient.getUsers(API_URL + username);
+        String UserByJson = this.userService.getUsers(API_URL + username);
         final User user = gson.fromJson(UserByJson, User.class);
 
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();

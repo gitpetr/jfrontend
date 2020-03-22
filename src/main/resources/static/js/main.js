@@ -2,7 +2,7 @@ $(function () {
     // load all
     loadAllUsers();
 
-        //update user
+    //update user
     $('#modalEditForm').on('submit', function (event) {
         event.preventDefault();
         $this = $(this);
@@ -11,11 +11,9 @@ $(function () {
             url: "/admin/saveUser/",
             data: $this.serialize(),
             success: updateUser,
-            error: function (request, status) {
-                console.log(request.responseText);
-                console.log(status);
+            error: function (error) {
+                console.log(error.responseText);
             }
-
         });
         return false;
     });
@@ -28,12 +26,28 @@ $(function () {
             type: 'post',
             url: "/admin/saveUser/",
             data: $form.serialize(),
-            success: appendNewUser
+            success: appendNewUser,
+            error: function (error) {
+                console.log(error.responseText);
+            }
+        })
+    });
+
+    //userDetails
+    $(document).on('click','.link-username' , function(event) {
+        event.preventDefault();
+        const $href = $(this).attr('href');
+        $.ajax({
+            url: $href,
+            success: userDetailsHtml,
+            error: function (error) {
+                console.log(error.responseText);
+            }
         })
     });
 
     //edit
-    $('.table').on('click', '.eBtn', function (event) {
+    $(document).on('click', '.eBtn', function (event) {
         event.preventDefault();
         let tr = $(this).parent().parent();
         $('#id').val($(tr).children('td:eq(0)').text());
@@ -45,15 +59,18 @@ $(function () {
     });
 
     //delete
-    $('#user-item').on('click', '.dBtn', function (event) {
+    $(document).on('click', '.dBtn', function (event) {
         event.preventDefault();
         let n = $(this).parent().parent();
         const href = $(this).attr('href');
         $.ajax({
             url: href,
             success: n.html(''),
-            error: console.log('удалить не удалось')
-        })
+            error: function (error) {
+                console.log(error.responseText);
+            }
+        });
+
     });
 
     function appendNewUser(u) {
@@ -63,7 +80,6 @@ $(function () {
     }
 
     function loadUsers(users) {
-        console.log(users);
         users.forEach(u => $('#user-item').append('<tr >' + oneTr(u) + '</tr>'));
     }
 
@@ -73,14 +89,26 @@ $(function () {
         $('#modal-edit-close').click();
     }
 
-    function oneTr(u) {
+    function userDetailsHtml(user) {
+        $('#title-content').html(user.username);
+        $('.content-form').html(
+            `<table class="table table-striped">
+                <thead>
+                    <th>ID</th><th>username</th><th>email</th><th>password</th><th>country</th><th>role</th><th>action</th>
+                </thead>
+                <tbody>${oneTr(user)}</tbody>
+            </table>`
+        )
+    }
+
+    const oneTr = (u) => {
         return '<td>' + u.id + '</td> ' +
-            '<td>' + u.username + '</td> ' +
+            '<td> <a class="link-username" href="/admin/user/' + u.username + '">' + u.username + '</a></td> ' +
             '<td>' + u.email + '</td> ' +
             '<td>' + u.password + '</td> ' +
             '<td>' + u.country + '</td> ' +
-            '<td>' + u.roles +
-            '</td> ' + '<td class="d-flex justify-content-around"> ' +
+            '<td>' + u.roles + '</td> ' +
+            '<td class="d-flex justify-content-around"> ' +
             '<a class="btn btn-primary eBtn" href="">Edit</a> ' +
             '<a class="btn btn-danger dBtn"' +
             ' href="/admin/user/delete/' + u.id + '">Delete</a></td> '
@@ -91,9 +119,8 @@ $(function () {
             type: 'get',
             url: '/admin/user/all',
             success: loadUsers,
-            error: function (request, status) {
-                console.log(request.responseText);
-                console.log(status);
+            error: function (error) {
+                console.log(error.responseText);
             }
         });
     }
