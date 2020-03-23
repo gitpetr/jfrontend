@@ -5,36 +5,39 @@ $(function () {
     //update user
     $('#modalEditForm').on('submit', function (event) {
         event.preventDefault();
-        $this = $(this);
-        $.ajax({
-            type: 'post',
-            url: "/admin/saveUser/",
-            data: $this.serialize(),
-            success: updateUser,
-            error: function (error) {
-                console.log(error.responseText);
-            }
-        });
-        return false;
+        const $this = $(this);
+        fetch("/admin/saveUser/", {
+            method: 'post',
+            body: $this.serialize(),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+            },
+        })
+            .then(user => user.json())
+            .then(updateUser)
+            .catch(error => console.log(error));
+
     });
 
     //new user
     $('#saveUser').on('submit', function (event) {
         event.preventDefault();
         let $form = $('#saveUser');
-        $.ajax({
-            type: 'post',
-            url: "/admin/saveUser/",
-            data: $form.serialize(),
-            success: appendNewUser,
-            error: function (error) {
-                console.log(error.responseText);
-            }
+
+        fetch("/admin/saveUser/", {
+            method: 'post',
+            body: $form.serialize(),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+            },
         })
+            .then(users => users.json())
+            .then(appendNewUser)
+            .catch(error => console.log(error));
     });
 
     //userDetails
-    $(document).on('click','.link-username' , function(event) {
+    $(document).on('click', '.link-username', function (event) {
         event.preventDefault();
         const $href = $(this).attr('href');
         $.ajax({
@@ -51,7 +54,7 @@ $(function () {
         event.preventDefault();
         let tr = $(this).parent().parent();
         $('#id').val($(tr).children('td:eq(0)').text());
-        $('#username').val($(tr).children('td:eq(1)').text());
+        $('#username').val($(tr).children('td:eq(1)').text().trim());
         $('#email').val($(tr).children('td:eq(2)').text());
         $('#password').val($(tr).children('td:eq(3)').text());
         $('#country').val($(tr).children('td:eq(4)').text());
@@ -63,14 +66,9 @@ $(function () {
         event.preventDefault();
         let n = $(this).parent().parent();
         const href = $(this).attr('href');
-        $.ajax({
-            url: href,
-            success: n.html(''),
-            error: function (error) {
-                console.log(error.responseText);
-            }
-        });
-
+        fetch(href)
+            .then(n.html(''))
+            .catch(err => console.log(err))
     });
 
     function appendNewUser(u) {
@@ -84,7 +82,7 @@ $(function () {
     }
 
     function updateUser(user) {
-        $updatingNode = $('td:contains(' + user.id + ')').parent();
+        let $updatingNode = $('td:contains(' + user.id + ')').parent();
         $updatingNode.html(oneTr(user));
         $('#modal-edit-close').click();
     }
@@ -96,7 +94,7 @@ $(function () {
                 <thead>
                     <th>ID</th><th>username</th><th>email</th><th>password</th><th>country</th><th>role</th><th>action</th>
                 </thead>
-                <tbody>${oneTr(user)}</tbody>
+                <tbody>${singleUser(user)}</tbody>
             </table>`
         )
     }
@@ -112,16 +110,25 @@ $(function () {
             '<a class="btn btn-primary eBtn" href="">Edit</a> ' +
             '<a class="btn btn-danger dBtn"' +
             ' href="/admin/user/delete/' + u.id + '">Delete</a></td> '
-    }
+    };
+
+    const singleUser = (u) => {
+        return '<td>' + u.id + '</td> ' +
+            '<td>' + u.username + '</td> ' +
+            '<td>' + u.email + '</td> ' +
+            '<td>' + u.password + '</td> ' +
+            '<td>' + u.country + '</td> ' +
+            '<td>' + u.roles + '</td> ' +
+            '<td class="d-flex justify-content-around"> ' +
+            '<a class="btn btn-primary eBtn" href="">Edit</a> ' +
+            '<a class="btn btn-danger dBtn"' +
+            ' href="/admin/user/delete/' + u.id + '">Delete</a></td> '
+    };
 
     function loadAllUsers() {
-        $.ajax({
-            type: 'get',
-            url: '/admin/user/all',
-            success: loadUsers,
-            error: function (error) {
-                console.log(error.responseText);
-            }
-        });
+        fetch("/admin/user/all")
+            .then(response => response.json())
+            .then(data => loadUsers(data))
+            .catch(err => console.log(err))
     }
 });
