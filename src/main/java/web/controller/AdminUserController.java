@@ -29,8 +29,7 @@ public class AdminUserController {
     @ResponseBody
     @GetMapping("/user/all")
     public List<User> userAll() {
-        final String users = userService.getUsers(API_URL + "/user");
-        return gson.fromJson(users, List.class);
+        return userService.getUsers();
     }
 
     @ResponseBody

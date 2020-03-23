@@ -2,8 +2,10 @@ package web.service;
 
 import web.model.User;
 
+import java.util.List;
+
 public interface UserService {
-    String getUsers(String url);
+    List<User> getUsers();
 
     User getUser(String username);
 

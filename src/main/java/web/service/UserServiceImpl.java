@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import web.model.User;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
     private String USER_URL = "http://localhost:8081/api/v1/admin/user/";
 
     public UserServiceImpl(RestTemplateBuilder builder) {
@@ -15,8 +17,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getUsers(String url) {
-        return restTemplate.getForObject(url, String.class);
+    public List<User> getUsers() {
+        return restTemplate.getForObject(USER_URL, List.class);
     }
 
     @Override
