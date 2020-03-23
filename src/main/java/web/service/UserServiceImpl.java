@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String saveUser(User user, String url) {
-        return restTemplate.postForObject(url, user, String.class);
+    public User saveUser(User user) {
+        return restTemplate.postForObject(USER_URL +"/saveUser", user, User.class);
     }
 }

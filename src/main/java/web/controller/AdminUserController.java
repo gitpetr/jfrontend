@@ -46,7 +46,6 @@ public class AdminUserController {
     @ResponseBody
     @PostMapping("/saveUser/")
     public User saveUser(@ModelAttribute("user") User user) {
-        final String savedUser = userService.saveUser(user, API_URL + "/saveUser");
-        return gson.fromJson(savedUser, User.class);
+        return userService.saveUser(user);
     }
 }

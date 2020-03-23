@@ -11,5 +11,5 @@ public interface UserService {
 
     void deleteUser(String url);
 
-    String saveUser(User user, String url);
+    User saveUser(User user);
 }
