@@ -36,8 +36,7 @@ public class AdminUserController {
     @ResponseBody
     @GetMapping("/user/{username}")
     public User getUser(@PathVariable("username") String username) {
-        final String user = userService.getUsers(API_URL + "/user/" + username);
-        return gson.fromJson(user, User.class);
+        return userService.getUser(username);
     }
 
     @GetMapping("/user/delete/{userId}")
