@@ -1,6 +1,5 @@
 package web.service;
 
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,8 +15,6 @@ import java.util.Set;
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
     UserService userService;
-    Gson gson = new Gson();
-    private String API_URL = "http://localhost:8081/api/v1/admin/user/";
 
     @Autowired
     public UserDetailServiceImpl(UserService userService) {
@@ -26,9 +23,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String UserByJson = this.userService.getUsers(API_URL + username);
-        final User user = gson.fromJson(UserByJson, User.class);
-
+        User user = this.userService.getUser(username);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         user.getRoles().forEach(role -> grantedAuthorities.add(new SimpleGrantedAuthority(role.getAuthority())));
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);

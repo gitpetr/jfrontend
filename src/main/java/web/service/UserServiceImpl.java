@@ -8,6 +8,7 @@ import web.model.User;
 @Service
 public class UserServiceImpl implements UserService {
     RestTemplate restTemplate;
+    private String USER_URL = "http://localhost:8081/api/v1/admin/user/";
 
     public UserServiceImpl(RestTemplateBuilder builder) {
         this.restTemplate = builder.basicAuthentication("ADMIN", "ADMIN").build();
@@ -16,6 +17,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getUsers(String url) {
         return restTemplate.getForObject(url, String.class);
+    }
+
+    @Override
+    public User getUser(String username) {
+        final User user = restTemplate.getForObject(USER_URL + username, User.class);
+        return user;
     }
 
     @Override

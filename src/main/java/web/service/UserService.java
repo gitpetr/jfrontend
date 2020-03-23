@@ -3,9 +3,11 @@ package web.service;
 import web.model.User;
 
 public interface UserService {
-    public String getUsers(String url);
+    String getUsers(String url);
 
-    public void deleteUser(String url);
+    User getUser(String username);
 
-    public String saveUser(User user, String url);
+    void deleteUser(String url);
+
+    String saveUser(User user, String url);
 }
