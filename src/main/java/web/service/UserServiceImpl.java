@@ -23,13 +23,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(String username) {
-        final User user = restTemplate.getForObject(USER_URL + username, User.class);
-        return user;
+        return restTemplate.getForObject(USER_URL + username, User.class);
     }
 
     @Override
-    public void deleteUser(String url) {
-        restTemplate.getForObject(url, String.class);
+    public void deleteUser(Long id) {
+        restTemplate.getForObject(USER_URL + "/delete/" + id, String.class);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package web.controller;
 
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +11,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin")
 public class AdminUserController {
-    UserService userService;
-    private String API_URL = "http://localhost:8081/api/v1/admin";
-    Gson gson = new Gson();
+    private UserService userService;
 
     @Autowired
     public AdminUserController(UserService userService) {
@@ -40,7 +37,7 @@ public class AdminUserController {
 
     @GetMapping("/user/delete/{userId}")
     public void deleteUser(@PathVariable("userId") long id) {
-        userService.deleteUser(API_URL + "/delete/" + id);
+        userService.deleteUser(id);
     }
 
     @ResponseBody

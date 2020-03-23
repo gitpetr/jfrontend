@@ -9,7 +9,7 @@ public interface UserService {
 
     User getUser(String username);
 
-    void deleteUser(String url);
+    void deleteUser(Long id);
 
     User saveUser(User user);
 }
